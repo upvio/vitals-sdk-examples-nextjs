@@ -90,7 +90,6 @@ export default function SendScanForm() {
     const result = await createScanWithMagicLink(
       patient.id,
       link.id,
-      link.slug,
       inputData,
     )
     setSubmitting(false)

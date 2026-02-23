@@ -192,7 +192,6 @@ export async function retrieveScan(
 export async function createScanWithMagicLink(
   patientId: string,
   vitalsLinkId: string,
-  linkSlug: string,
   inputData?: Record<string, unknown>,
 ): Promise<MagicLinkResult> {
   const alias = process.env.UPVIO_BUSINESS_ALIAS
@@ -200,12 +199,17 @@ export async function createScanWithMagicLink(
     return { error: 'UPVIO_BUSINESS_ALIAS is not configured.' }
   }
 
+  let scanId: string
   try {
-    await upvio.v1.vitals.scans.create({
+    const { data: scan } = await upvio.v1.vitals.scans.create({
       vitalsLinkId,
       patientId,
       inputData,
     })
+    if (!scan) {
+      return { error: 'Failed to create scan.' }
+    }
+    scanId = scan.id
   } catch (err) {
     console.error('Error creating scan:', err)
     return {
@@ -213,7 +217,7 @@ export async function createScanWithMagicLink(
     }
   }
 
-  const redirectUrl = `https://scan.upvio.com/${alias}/links/${linkSlug}`
+  const redirectUrl = `https://scan.upvio.com/${alias}/scans/${scanId}`
 
   try {
     const { data: magicLink } = await upvio.v1.core.patients.createMagicLink(
