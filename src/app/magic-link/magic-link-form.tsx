@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 
@@ -11,6 +10,12 @@ import {
   type Patient,
   type VitalsLink,
 } from '@/app/actions'
+import { BackLink } from '@/components/ui/back-link'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select } from '@/components/ui/select'
 import { scanUrl, vitalsUrl } from '@/lib/urls'
 
 type View =
@@ -90,9 +95,13 @@ export default function MagicLinkForm({ alias }: { alias?: string }) {
     }
   }
 
-  const dashboardUrl = alias ? vitalsUrl(`${alias}/clients`) : undefined
+  const dashboardUrl = alias
+    ? vitalsUrl(`${alias}/clients`)
+    : undefined
 
-  const selectedSlug = links.find((l) => l.id === selectedLinkId)?.slug
+  const selectedSlug = links.find(
+    (l) => l.id === selectedLinkId,
+  )?.slug
   const redirectUrl =
     alias && selectedSlug
       ? scanUrl(`${alias}/links/${selectedSlug}`)
@@ -101,7 +110,7 @@ export default function MagicLinkForm({ alias }: { alias?: string }) {
   if (view.kind === 'result') {
     return (
       <>
-        <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+        <Card>
           <h2 className="mb-1 text-xl font-semibold text-foreground">
             Magic link for {view.patientName}
           </h2>
@@ -114,56 +123,48 @@ export default function MagicLinkForm({ alias }: { alias?: string }) {
             </code>
           </div>
           <div className="mt-4 flex gap-2">
-            <button
+            <Button
               type="button"
-              onClick={() => navigator.clipboard.writeText(view.magicLinkUrl)}
-              className="rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground hover:opacity-90"
+              variant="secondary"
+              onClick={() =>
+                navigator.clipboard.writeText(view.magicLinkUrl)
+              }
             >
               Copy
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="secondary"
               onClick={() => setView({ kind: 'form' })}
-              className="rounded-md bg-secondary px-3 py-1.5 text-sm text-secondary-foreground hover:opacity-90"
             >
               Generate another
-            </button>
+            </Button>
           </div>
-        </div>
-        <Link
-          href="/"
-          className="mt-6 inline-block text-sm text-primary hover:underline"
-        >
-          &larr; Back to home
-        </Link>
+        </Card>
+        <BackLink />
       </>
     )
   }
 
   if (loading) {
-    return <p className="text-sm text-muted-foreground">Loading...</p>
+    return (
+      <p className="text-sm text-muted-foreground">Loading...</p>
+    )
   }
 
   return (
     <>
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-8 rounded-lg border border-border bg-card p-6 shadow-sm"
-      >
+      <Card as="form" onSubmit={handleSubmit} className="space-y-8">
         <div className="flex flex-col gap-6">
           <div>
-            <label
-              htmlFor="patient"
-              className="mb-1 block text-sm font-semibold uppercase text-foreground"
-            >
-              Patient
-            </label>
-            <select
+            <Label htmlFor="patient">Patient</Label>
+            <Select
               id="patient"
               value={selectedPatientId}
-              onChange={(e) => setSelectedPatientId(e.target.value)}
+              onChange={(e) =>
+                setSelectedPatientId(e.target.value)
+              }
               required
-              className="w-full rounded-md border border-input bg-background px-2 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             >
               <option value="">Select a patient</option>
               {patients.map((p) => (
@@ -171,12 +172,13 @@ export default function MagicLinkForm({ alias }: { alias?: string }) {
                   {p.name} ({p.email})
                 </option>
               ))}
-            </select>
+            </Select>
 
             <p className="mt-1 text-sm leading-tight text-muted-foreground">
-              When the patient opens the magic link, they'll be automatically
-              signed in as this person, no login needed. Don't see the patient
-              you want to create a link for?{' '}
+              When the patient opens the magic link, they'll be
+              automatically signed in as this person, no login
+              needed. Don't see the patient you want to create a
+              link for?{' '}
               {dashboardUrl && (
                 <a
                   href={dashboardUrl}
@@ -191,18 +193,12 @@ export default function MagicLinkForm({ alias }: { alias?: string }) {
           </div>
 
           <div>
-            <label
-              htmlFor="link"
-              className="mb-1 block text-sm font-semibold uppercase text-foreground"
-            >
-              Vitals link
-            </label>
-            <select
+            <Label htmlFor="link">Vitals link</Label>
+            <Select
               id="link"
               value={selectedLinkId}
               onChange={(e) => setSelectedLinkId(e.target.value)}
               required
-              className="w-full rounded-md border border-input bg-background px-2 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             >
               <option value="">Select a link</option>
               {links.map((l) => (
@@ -210,11 +206,11 @@ export default function MagicLinkForm({ alias }: { alias?: string }) {
                   {l.name}
                 </option>
               ))}
-            </select>
+            </Select>
             <p className="mt-1 text-sm leading-tight text-muted-foreground">
-              After signing in, the patient will be redirected to this scan page
-              where they can complete their health check. Don't have a link set
-              up yet?{' '}
+              After signing in, the patient will be redirected to
+              this scan page where they can complete their health
+              check. Don't have a link set up yet?{' '}
               {alias && (
                 <a
                   href={vitalsUrl(`${alias}/links`)}
@@ -236,33 +232,32 @@ export default function MagicLinkForm({ alias }: { alias?: string }) {
               >
                 Redirect URL
               </label>
-              <input
+              <Input
                 id="redirectUrl"
                 type="text"
                 readOnly
                 value={redirectUrl}
-                className="w-full rounded-md border border-input bg-muted px-2 py-2 text-sm text-muted-foreground focus:outline-none"
+                className="bg-muted text-sm text-muted-foreground"
               />
             </div>
           )}
         </div>
 
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        {error && (
+          <p className="text-sm text-destructive">{error}</p>
+        )}
 
-        <button
+        <Button
           type="submit"
-          disabled={submitting || !selectedPatientId || !selectedLinkId}
-          className="rounded-md bg-primary px-4 w-full py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
+          disabled={
+            submitting || !selectedPatientId || !selectedLinkId
+          }
+          fullWidth
         >
           {submitting ? 'Generating...' : 'Generate Magic Link'}
-        </button>
-      </form>
-      <Link
-        href="/"
-        className="mt-6 inline-block text-sm text-primary hover:underline"
-      >
-        &larr; Back to home
-      </Link>
+        </Button>
+      </Card>
+      <BackLink />
     </>
   )
 }

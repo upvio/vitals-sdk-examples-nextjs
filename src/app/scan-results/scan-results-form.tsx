@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
 
 import {
@@ -9,9 +8,16 @@ import {
   type ScanDetail,
   type ScanSummary,
 } from '@/app/actions'
+import { BackLink } from '@/components/ui/back-link'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Label } from '@/components/ui/label'
+import { Select } from '@/components/ui/select'
 import { vitalsUrl } from '@/lib/urls'
 
-export default function ScanResultsForm({ alias }: { alias?: string }) {
+export default function ScanResultsForm({
+  alias,
+}: { alias?: string }) {
   const [scans, setScans] = useState<ScanSummary[]>([])
   const [selectedScanId, setSelectedScanId] = useState('')
   const [scanDetail, setScanDetail] = useState<ScanDetail>()
@@ -61,23 +67,21 @@ export default function ScanResultsForm({ alias }: { alias?: string }) {
   }
 
   if (loading) {
-    return <p className="text-sm text-muted-foreground">Loading...</p>
+    return (
+      <p className="text-sm text-muted-foreground">Loading...</p>
+    )
   }
 
   return (
     <>
-      <form
+      <Card
+        as="form"
         onSubmit={handleSubmit}
-        className="space-y-8 rounded-lg border border-border bg-card p-6 shadow-sm"
+        className="space-y-8"
       >
         <div>
-          <label
-            htmlFor="scan"
-            className="mb-1 block text-sm font-semibold uppercase text-foreground"
-          >
-            Scan
-          </label>
-          <select
+          <Label htmlFor="scan">Scan</Label>
+          <Select
             id="scan"
             value={selectedScanId}
             onChange={(e) => {
@@ -85,7 +89,6 @@ export default function ScanResultsForm({ alias }: { alias?: string }) {
               setScanDetail(undefined)
             }}
             required
-            className="w-full rounded-md border border-input bg-background px-2 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="">Select a scan</option>
             {scans.map((s) => (
@@ -93,10 +96,10 @@ export default function ScanResultsForm({ alias }: { alias?: string }) {
                 {formatDate(s.createdAt)} — {s.status}
               </option>
             ))}
-          </select>
+          </Select>
           <p className="mt-1 text-sm leading-tight text-muted-foreground">
-            Pick a scan to view its details, input data, and results. Don't see
-            any scans? Visit your{' '}
+            Pick a scan to view its details, input data, and
+            results. Don't see any scans? Visit your{' '}
             {alias && (
               <a
                 href={vitalsUrl(alias)}
@@ -111,33 +114,43 @@ export default function ScanResultsForm({ alias }: { alias?: string }) {
           </p>
         </div>
 
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        {error && (
+          <p className="text-sm text-destructive">{error}</p>
+        )}
 
-        <button
+        <Button
           type="submit"
           disabled={fetching || !selectedScanId}
-          className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
+          fullWidth
         >
           {fetching ? 'Fetching...' : 'Fetch Scan'}
-        </button>
-      </form>
+        </Button>
+      </Card>
 
       {scanDetail && (
-        <div className="mt-6 text-sm rounded-lg border border-border bg-card p-6 shadow-sm flex flex-col gap-4">
+        <Card className="mt-6 flex flex-col gap-4 text-sm">
           <div className="flex flex-col">
-            <span className="font-semibold text-foreground">Status</span>
-            <span className="text-foreground">{scanDetail.status}</span>
+            <span className="font-semibold text-foreground">
+              Status
+            </span>
+            <span className="text-foreground">
+              {scanDetail.status}
+            </span>
           </div>
 
           <div className="flex flex-col">
-            <span className="font-semibold text-foreground">Created</span>
+            <span className="font-semibold text-foreground">
+              Created
+            </span>
             <span className="text-muted-foreground">
               {formatDate(scanDetail.createdAt)}
             </span>
           </div>
 
           <div className="flex flex-col">
-            <span className="font-semibold text-foreground">Updated</span>
+            <span className="font-semibold text-foreground">
+              Updated
+            </span>
             <span className="text-muted-foreground">
               {formatDate(scanDetail.updatedAt)}
             </span>
@@ -145,7 +158,9 @@ export default function ScanResultsForm({ alias }: { alias?: string }) {
 
           {scanDetail.startedAt && (
             <div className="flex flex-col">
-              <span className="font-semibold text-foreground">Started</span>
+              <span className="font-semibold text-foreground">
+                Started
+              </span>
               <span className="text-muted-foreground">
                 {formatDate(scanDetail.startedAt)}
               </span>
@@ -154,7 +169,9 @@ export default function ScanResultsForm({ alias }: { alias?: string }) {
 
           {scanDetail.patientId && (
             <div className="flex flex-col">
-              <span className="font-semibold text-foreground">Patient ID</span>
+              <span className="font-semibold text-foreground">
+                Patient ID
+              </span>
               <span className="break-all font-mono text-xs text-muted-foreground">
                 {scanDetail.patientId}
               </span>
@@ -174,7 +191,9 @@ export default function ScanResultsForm({ alias }: { alias?: string }) {
 
           {scanDetail.includedMetrics.length > 0 && (
             <div className="flex flex-col">
-              <span className="font-semibold text-foreground">Metrics</span>
+              <span className="font-semibold text-foreground">
+                Metrics
+              </span>
               <span className="text-muted-foreground">
                 {scanDetail.includedMetrics.join(', ')}
               </span>
@@ -203,20 +222,16 @@ export default function ScanResultsForm({ alias }: { alias?: string }) {
             </div>
           ) : null}
 
-          {scanDetail.inputData == null && scanDetail.results == null && (
-            <p className="text-sm text-muted-foreground">
-              No input data or results available for this scan.
-            </p>
-          )}
-        </div>
+          {scanDetail.inputData == null &&
+            scanDetail.results == null && (
+              <p className="text-sm text-muted-foreground">
+                No input data or results available for this scan.
+              </p>
+            )}
+        </Card>
       )}
 
-      <Link
-        href="/"
-        className="mt-6 inline-block text-sm text-primary hover:underline"
-      >
-        &larr; Back to home
-      </Link>
+      <BackLink />
     </>
   )
 }

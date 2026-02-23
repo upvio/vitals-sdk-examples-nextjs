@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { Card } from '@/components/ui/card'
 import { developersUrl } from '@/lib/urls'
 
 const cards = [
@@ -17,7 +18,8 @@ const cards = [
   },
   {
     title: 'Query scan results',
-    description: 'Browse completed scans and inspect health metrics. ',
+    description:
+      'Browse completed scans and inspect health metrics. ',
     route: '/scan-results',
   },
 ]
@@ -30,7 +32,8 @@ export default function Home() {
           Vitals SDK Examples
         </h1>
         <p className="mb-8 text-sm text-muted-foreground leading-tight">
-          You can learn more about how to implement these features in the{' '}
+          You can learn more about how to implement these features
+          in the{' '}
           <a
             href={developersUrl('sdk/')}
             className="underline underline-offset-2"
@@ -42,10 +45,7 @@ export default function Home() {
       </div>
       <ul className="grid gap-4 sm:grid-cols-3">
         {cards.map((card) => (
-          <li
-            key={card.route}
-            className="flex flex-col rounded-lg border border-border bg-card p-6 shadow-sm"
-          >
+          <Card key={card.route} as="li" className="flex flex-col">
             <h2 className="mb-1 font-bold text-card-foreground uppercase">
               {card.title}
             </h2>
@@ -58,7 +58,7 @@ export default function Home() {
             >
               Open
             </Link>
-          </li>
+          </Card>
         ))}
       </ul>
     </main>
