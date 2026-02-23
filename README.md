@@ -22,7 +22,7 @@ metric results.
 
 ## Prerequisites
 
-- Node 20+
+- Node 22+
 - [pnpm](https://pnpm.io/)
 - An Upvio API key ([docs](https://developers.upvio.com/api/api-keys/))
 - A scan link created in the
