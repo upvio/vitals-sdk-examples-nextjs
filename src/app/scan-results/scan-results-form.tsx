@@ -10,6 +10,7 @@ import {
   type ScanDetail,
   type ScanSummary,
 } from '@/app/actions'
+import { vitalsUrl } from '@/lib/urls'
 
 export default function ScanResultsForm() {
   const [scans, setScans] = useState<ScanSummary[]>([])
@@ -104,7 +105,7 @@ export default function ScanResultsForm() {
             any scans? Visit your{' '}
             {alias && (
               <a
-                href={`https://vitals.upvio.com/${alias}`}
+                href={vitalsUrl(alias)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline underline-offset-2"

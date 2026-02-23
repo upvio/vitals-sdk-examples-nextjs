@@ -1,5 +1,7 @@
 import Link from 'next/link'
 
+import { developersUrl } from '@/lib/urls'
+
 const cards = [
   {
     title: 'Create magic link',
@@ -30,7 +32,7 @@ export default function Home() {
         <p className="mb-8 text-sm text-muted-foreground leading-tight">
           You can learn more about how to implement these features in the{' '}
           <a
-            href="https://developers.upvio.com/sdk/"
+            href={developersUrl('sdk/')}
             className="underline underline-offset-2"
           >
             Upvio SDK

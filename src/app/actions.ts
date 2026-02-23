@@ -1,6 +1,7 @@
 'use server'
 
 import { upvio } from '@/lib/upvio'
+import { scanUrl } from '@/lib/urls'
 
 export type Patient = {
   id: string
@@ -63,7 +64,7 @@ export async function generateMagicLink(
     return { error: 'UPVIO_BUSINESS_ALIAS is not configured.' }
   }
 
-  const redirectUrl = `https://scan.upvio.com/${alias}/links/${linkSlug}`
+  const redirectUrl = scanUrl(`${alias}/links/${linkSlug}`)
 
   try {
     const { data: magicLink } = await upvio.v1.core.patients.createMagicLink(
@@ -217,7 +218,7 @@ export async function createScanWithMagicLink(
     }
   }
 
-  const redirectUrl = `https://scan.upvio.com/${alias}/scans/${scanId}`
+  const redirectUrl = scanUrl(`${alias}/scans/${scanId}`)
 
   try {
     const { data: magicLink } = await upvio.v1.core.patients.createMagicLink(

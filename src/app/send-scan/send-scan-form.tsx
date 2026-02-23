@@ -11,6 +11,7 @@ import {
   type Patient,
   type VitalsLink,
 } from '@/app/actions'
+import { vitalsUrl } from '@/lib/urls'
 
 const DEFAULT_INPUT_DATA = JSON.stringify(
   {
@@ -109,7 +110,7 @@ export default function SendScanForm() {
   }
 
   const dashboardUrl = alias
-    ? `https://vitals.upvio.com/${alias}/clients`
+    ? vitalsUrl(`${alias}/clients`)
     : undefined
 
   if (view.kind === 'result') {
@@ -229,7 +230,7 @@ export default function SendScanForm() {
               measured.{' '}
               {alias && (
                 <a
-                  href={`https://vitals.upvio.com/${alias}/links`}
+                  href={vitalsUrl(`${alias}/links`)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="underline underline-offset-2"

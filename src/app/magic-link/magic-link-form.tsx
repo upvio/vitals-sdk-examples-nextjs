@@ -12,6 +12,7 @@ import {
   type Patient,
   type VitalsLink,
 } from '@/app/actions'
+import { scanUrl, vitalsUrl } from '@/lib/urls'
 
 type View =
   | { kind: 'form' }
@@ -94,13 +95,13 @@ export default function MagicLinkForm() {
   }
 
   const dashboardUrl = alias
-    ? `https://vitals.upvio.com/${alias}/clients`
+    ? vitalsUrl(`${alias}/clients`)
     : undefined
 
   const selectedSlug = links.find((l) => l.id === selectedLinkId)?.slug
   const redirectUrl =
     alias && selectedSlug
-      ? `https://scan.upvio.com/${alias}/links/${selectedSlug}`
+      ? scanUrl(`${alias}/links/${selectedSlug}`)
       : undefined
 
   if (view.kind === 'result') {
@@ -222,7 +223,7 @@ export default function MagicLinkForm() {
               up yet?{' '}
               {alias && (
                 <a
-                  href={`https://vitals.upvio.com/${alias}/links`}
+                  href={vitalsUrl(`${alias}/links`)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="underline underline-offset-2"

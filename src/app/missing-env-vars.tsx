@@ -1,3 +1,5 @@
+import { developersUrl } from '@/lib/urls'
+
 export default function MissingEnvVars({ missing }: { missing: string[] }) {
   return (
     <main className="mx-auto max-w-lg p-4 sm:px-8">
@@ -21,7 +23,7 @@ export default function MissingEnvVars({ missing }: { missing: string[] }) {
           to <code className="font-mono text-foreground">.env.local</code> and
           fill in the values, then restart the dev server. See{' '}
           <a
-            href="https://developers.upvio.com/sdk/#configure-credentials"
+            href={developersUrl('sdk/#configure-credentials')}
             className="underline underline-offset-2"
           >
             Configure credentials
