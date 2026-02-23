@@ -44,7 +44,7 @@ export default function Home() {
         {cards.map((card) => (
           <li
             key={card.route}
-            className="flex flex-col rounded-lg border border-border bg-card p-6 shadow-sm "
+            className="flex flex-col rounded-lg border border-border bg-card p-6 shadow-sm"
           >
             <h2 className="mb-1 font-bold text-card-foreground uppercase">
               {card.title}

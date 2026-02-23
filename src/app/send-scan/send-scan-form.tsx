@@ -5,7 +5,6 @@ import { useCallback, useEffect, useState } from 'react'
 
 import {
   createScanWithMagicLink,
-  getBusinessAlias,
   listLinks,
   listPatients,
   type Patient,
@@ -29,11 +28,10 @@ type View =
   | { kind: 'form' }
   | { kind: 'result'; magicLinkUrl: string; patientName: string }
 
-export default function SendScanForm() {
+export default function SendScanForm({ alias }: { alias?: string }) {
   const [view, setView] = useState<View>({ kind: 'form' })
   const [patients, setPatients] = useState<Patient[]>([])
   const [links, setLinks] = useState<VitalsLink[]>([])
-  const [alias, setAlias] = useState<string>()
   const [selectedPatientId, setSelectedPatientId] = useState('')
   const [selectedLinkId, setSelectedLinkId] = useState('')
   const [inputJson, setInputJson] = useState(DEFAULT_INPUT_DATA)
@@ -45,10 +43,9 @@ export default function SendScanForm() {
     setLoading(true)
     setError(undefined)
 
-    const [patientsResult, linksResult, businessAlias] = await Promise.all([
+    const [patientsResult, linksResult] = await Promise.all([
       listPatients(),
       listLinks(),
-      getBusinessAlias(),
     ])
 
     if (patientsResult.error) {
@@ -63,7 +60,6 @@ export default function SendScanForm() {
       setLinks(linksResult.links ?? [])
     }
 
-    setAlias(businessAlias)
     setLoading(false)
   }, [])
 
@@ -88,11 +84,7 @@ export default function SendScanForm() {
     setSubmitting(true)
     setError(undefined)
 
-    const result = await createScanWithMagicLink(
-      patient.id,
-      link.id,
-      inputData,
-    )
+    const result = await createScanWithMagicLink(patient.id, link.id, inputData)
     setSubmitting(false)
 
     if (result.error) {
@@ -109,9 +101,7 @@ export default function SendScanForm() {
     }
   }
 
-  const dashboardUrl = alias
-    ? vitalsUrl(`${alias}/clients`)
-    : undefined
+  const dashboardUrl = alias ? vitalsUrl(`${alias}/clients`) : undefined
 
   if (view.kind === 'result') {
     return (

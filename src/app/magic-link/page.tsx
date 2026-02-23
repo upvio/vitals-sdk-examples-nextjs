@@ -3,8 +3,10 @@ import { Suspense } from 'react'
 import MagicLinkForm from './magic-link-form'
 
 export default function MagicLinkPage() {
+  const alias = process.env.UPVIO_BUSINESS_ALIAS
+
   return (
-    <main className="mx-auto w-full max-w-xl p-4 sm:px-8 ">
+    <main className="mx-auto w-full max-w-xl p-4 sm:px-8">
       <div className="text-center">
         <h1 className="text-3xl font-bold text-foreground">
           Create magic link
@@ -15,7 +17,7 @@ export default function MagicLinkPage() {
         </p>
       </div>
       <Suspense>
-        <MagicLinkForm />
+        <MagicLinkForm alias={alias} />
       </Suspense>
     </main>
   )

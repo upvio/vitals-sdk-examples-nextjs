@@ -3,6 +3,9 @@
 import { upvio } from '@/lib/upvio'
 import { scanUrl } from '@/lib/urls'
 
+const formatError = (err: unknown): string =>
+  err instanceof Error ? err.message : 'Something went wrong'
+
 export type Patient = {
   id: string
   name: string
@@ -30,10 +33,6 @@ type MagicLinkResult = {
   error?: string
 }
 
-export async function getBusinessAlias(): Promise<string | undefined> {
-  return process.env.UPVIO_BUSINESS_ALIAS
-}
-
 export async function listPatients(): Promise<ListPatientsResult> {
   try {
     const { data } = await upvio.v1.core.patients.list()
@@ -49,9 +48,7 @@ export async function listPatients(): Promise<ListPatientsResult> {
     }
   } catch (err) {
     console.error('Error listing patients:', err)
-    return {
-      error: err instanceof Error ? err.message : 'Something went wrong',
-    }
+    return { error: formatError(err) }
   }
 }
 
@@ -79,9 +76,7 @@ export async function generateMagicLink(
     return { magicLinkUrl: magicLink.url }
   } catch (err) {
     console.error('Error generating magic link:', err)
-    return {
-      error: err instanceof Error ? err.message : 'Something went wrong',
-    }
+    return { error: formatError(err) }
   }
 }
 
@@ -102,9 +97,7 @@ export async function listLinks(): Promise<ListLinksResult> {
     }
   } catch (err) {
     console.error('Error listing links:', err)
-    return {
-      error: err instanceof Error ? err.message : 'Something went wrong',
-    }
+    return { error: formatError(err) }
   }
 }
 
@@ -154,9 +147,7 @@ export async function listScans(): Promise<ListScansResult> {
     }
   } catch (err) {
     console.error('Error listing scans:', err)
-    return {
-      error: err instanceof Error ? err.message : 'Something went wrong',
-    }
+    return { error: formatError(err) }
   }
 }
 
@@ -184,9 +175,7 @@ export async function retrieveScan(
     }
   } catch (err) {
     console.error('Error retrieving scan:', err)
-    return {
-      error: err instanceof Error ? err.message : 'Something went wrong',
-    }
+    return { error: formatError(err) }
   }
 }
 
@@ -213,9 +202,7 @@ export async function createScanWithMagicLink(
     scanId = scan.id
   } catch (err) {
     console.error('Error creating scan:', err)
-    return {
-      error: err instanceof Error ? err.message : 'Something went wrong',
-    }
+    return { error: formatError(err) }
   }
 
   const redirectUrl = scanUrl(`${alias}/scans/${scanId}`)
@@ -233,8 +220,6 @@ export async function createScanWithMagicLink(
     return { magicLinkUrl: magicLink.url }
   } catch (err) {
     console.error('Error generating magic link:', err)
-    return {
-      error: err instanceof Error ? err.message : 'Something went wrong',
-    }
+    return { error: formatError(err) }
   }
 }

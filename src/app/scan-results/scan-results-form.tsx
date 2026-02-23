@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
 
 import {
-  getBusinessAlias,
   listScans,
   retrieveScan,
   type ScanDetail,
@@ -12,9 +11,8 @@ import {
 } from '@/app/actions'
 import { vitalsUrl } from '@/lib/urls'
 
-export default function ScanResultsForm() {
+export default function ScanResultsForm({ alias }: { alias?: string }) {
   const [scans, setScans] = useState<ScanSummary[]>([])
-  const [alias, setAlias] = useState<string>()
   const [selectedScanId, setSelectedScanId] = useState('')
   const [scanDetail, setScanDetail] = useState<ScanDetail>()
   const [loading, setLoading] = useState(true)
@@ -25,17 +23,13 @@ export default function ScanResultsForm() {
     setLoading(true)
     setError(undefined)
 
-    const [result, businessAlias] = await Promise.all([
-      listScans(),
-      getBusinessAlias(),
-    ])
+    const result = await listScans()
     if (result.error) {
       setError(result.error)
     } else {
       setScans(result.scans ?? [])
     }
 
-    setAlias(businessAlias)
     setLoading(false)
   }, [])
 
@@ -200,7 +194,7 @@ export default function ScanResultsForm() {
 
           {scanDetail.results != null ? (
             <div className="flex flex-col">
-              <h3 className="mb-2 text-sm font-semibold  text-foreground">
+              <h3 className="mb-2 text-sm font-semibold text-foreground">
                 Results
               </h3>
               <pre className="overflow-x-auto rounded-md border border-border bg-muted p-3 font-mono text-sm text-foreground">

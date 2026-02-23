@@ -3,7 +3,7 @@ const defaultDomain =
 
 const domain = process.env.NEXT_PUBLIC_UPVIO_DOMAIN || defaultDomain
 
-export const apiBaseUrl = (): string => `https://api.${domain}`
+export const apiBaseUrl = `https://api.${domain}`
 
 export const scanUrl = (path: string): string =>
   `https://scan.${domain}/${path}`

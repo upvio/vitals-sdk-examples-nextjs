@@ -15,5 +15,5 @@ if (!businessId) {
 export const upvio = new UpvioApiClient({
   apiKey,
   businessId,
-  baseUrl: apiBaseUrl(),
+  baseUrl: apiBaseUrl,
 })

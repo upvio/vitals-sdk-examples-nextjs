@@ -6,7 +6,6 @@ import { useCallback, useEffect, useState } from 'react'
 
 import {
   generateMagicLink,
-  getBusinessAlias,
   listLinks,
   listPatients,
   type Patient,
@@ -18,13 +17,12 @@ type View =
   | { kind: 'form' }
   | { kind: 'result'; magicLinkUrl: string; patientName: string }
 
-export default function MagicLinkForm() {
+export default function MagicLinkForm({ alias }: { alias?: string }) {
   const searchParams = useSearchParams()
 
   const [view, setView] = useState<View>({ kind: 'form' })
   const [patients, setPatients] = useState<Patient[]>([])
   const [links, setLinks] = useState<VitalsLink[]>([])
-  const [alias, setAlias] = useState<string>()
   const [selectedPatientId, setSelectedPatientId] = useState('')
   const [selectedLinkId, setSelectedLinkId] = useState('')
   const [loading, setLoading] = useState(true)
@@ -35,10 +33,9 @@ export default function MagicLinkForm() {
     setLoading(true)
     setError(undefined)
 
-    const [patientsResult, linksResult, businessAlias] = await Promise.all([
+    const [patientsResult, linksResult] = await Promise.all([
       listPatients(),
       listLinks(),
-      getBusinessAlias(),
     ])
 
     if (patientsResult.error) {
@@ -53,7 +50,6 @@ export default function MagicLinkForm() {
       setLinks(linksResult.links ?? [])
     }
 
-    setAlias(businessAlias)
     setLoading(false)
   }, [])
 
@@ -94,9 +90,7 @@ export default function MagicLinkForm() {
     }
   }
 
-  const dashboardUrl = alias
-    ? vitalsUrl(`${alias}/clients`)
-    : undefined
+  const dashboardUrl = alias ? vitalsUrl(`${alias}/clients`) : undefined
 
   const selectedSlug = links.find((l) => l.id === selectedLinkId)?.slug
   const redirectUrl =
@@ -111,7 +105,7 @@ export default function MagicLinkForm() {
           <h2 className="mb-1 text-xl font-semibold text-foreground">
             Magic link for {view.patientName}
           </h2>
-          <p className="mb-4 text-sm text-muted-foreground ">
+          <p className="mb-4 text-sm text-muted-foreground">
             Send this URL to the patient:
           </p>
           <div className="rounded-md border border-border bg-muted p-3">
@@ -160,7 +154,7 @@ export default function MagicLinkForm() {
           <div>
             <label
               htmlFor="patient"
-              className="mb-1 block text-sm font-semibold text-foreground uppercase"
+              className="mb-1 block text-sm font-semibold uppercase text-foreground"
             >
               Patient
             </label>
@@ -199,7 +193,7 @@ export default function MagicLinkForm() {
           <div>
             <label
               htmlFor="link"
-              className="mb-1 block text-sm font-semibold text-foreground uppercase"
+              className="mb-1 block text-sm font-semibold uppercase text-foreground"
             >
               Vitals link
             </label>

@@ -3,6 +3,8 @@ import { Suspense } from 'react'
 import SendScanForm from './send-scan-form'
 
 export default function SendScanPage() {
+  const alias = process.env.UPVIO_BUSINESS_ALIAS
+
   return (
     <main className="mx-auto w-full max-w-xl p-4 sm:px-8">
       <div className="text-center">
@@ -16,7 +18,7 @@ export default function SendScanPage() {
         </p>
       </div>
       <Suspense>
-        <SendScanForm />
+        <SendScanForm alias={alias} />
       </Suspense>
     </main>
   )

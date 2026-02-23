@@ -3,6 +3,8 @@ import { Suspense } from 'react'
 import ScanResultsForm from './scan-results-form'
 
 export default function ScanResultsPage() {
+  const alias = process.env.UPVIO_BUSINESS_ALIAS
+
   return (
     <main className="mx-auto w-full max-w-xl p-4 sm:px-8">
       <div className="text-center">
@@ -15,7 +17,7 @@ export default function ScanResultsPage() {
         </p>
       </div>
       <Suspense>
-        <ScanResultsForm />
+        <ScanResultsForm alias={alias} />
       </Suspense>
     </main>
   )
