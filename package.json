@@ -1,5 +1,5 @@
 {
-  "name": "magic-link-demo",
+  "name": "upvio-sdk-examples-nextjs",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -12,15 +12,16 @@
   "dependencies": {
     "next": "16.1.6",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "@upvio/sdk-node": "link:../../upvio-js/packages/upvio-sdk-node"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "@tailwindcss/postcss": "4.2.0",
+    "@types/node": "20.19.33",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "tailwindcss": "4.2.0",
+    "typescript": "5.9.3"
   }
 }
