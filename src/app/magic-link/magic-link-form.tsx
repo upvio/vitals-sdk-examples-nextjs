@@ -2,7 +2,6 @@
 
 import { useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
-
 import {
   generateMagicLink,
   listLinks,
@@ -44,15 +43,15 @@ export default function MagicLinkForm({ alias }: { alias?: string }) {
     ])
 
     if (patientsResult.error) {
-      setError(patientsResult.error)
+      setError(patientsResult.error.title)
     } else {
-      setPatients(patientsResult.patients ?? [])
+      setPatients(patientsResult.data ?? [])
     }
 
     if (linksResult.error) {
-      setError(linksResult.error)
+      setError(linksResult.error.title)
     } else {
-      setLinks(linksResult.links ?? [])
+      setLinks(linksResult.data ?? [])
     }
 
     setLoading(false)
@@ -78,30 +77,29 @@ export default function MagicLinkForm({ alias }: { alias?: string }) {
 
     setSubmitting(true)
     setError(undefined)
-    const result = await generateMagicLink(patient.id, link.slug)
+    const { data: magicLink, error } = await generateMagicLink(
+      patient.id,
+      link.slug,
+    )
     setSubmitting(false)
 
-    if (result.error) {
-      setError(result.error)
+    if (error) {
+      setError(error.title)
       return
     }
 
-    if (result.magicLinkUrl) {
+    if (magicLink) {
       setView({
         kind: 'result',
-        magicLinkUrl: result.magicLinkUrl,
+        magicLinkUrl: magicLink.url,
         patientName: patient.name,
       })
     }
   }
 
-  const dashboardUrl = alias
-    ? vitalsUrl(`${alias}/clients`)
-    : undefined
+  const dashboardUrl = alias ? vitalsUrl(`${alias}/clients`) : undefined
 
-  const selectedSlug = links.find(
-    (l) => l.id === selectedLinkId,
-  )?.slug
+  const selectedSlug = links.find((l) => l.id === selectedLinkId)?.slug
   const redirectUrl =
     alias && selectedSlug
       ? scanUrl(`${alias}/links/${selectedSlug}`)
@@ -126,9 +124,7 @@ export default function MagicLinkForm({ alias }: { alias?: string }) {
             <Button
               type="button"
               variant="secondary"
-              onClick={() =>
-                navigator.clipboard.writeText(view.magicLinkUrl)
-              }
+              onClick={() => navigator.clipboard.writeText(view.magicLinkUrl)}
             >
               Copy
             </Button>
@@ -147,9 +143,7 @@ export default function MagicLinkForm({ alias }: { alias?: string }) {
   }
 
   if (loading) {
-    return (
-      <p className="text-sm text-muted-foreground">Loading...</p>
-    )
+    return <p className="text-sm text-muted-foreground">Loading...</p>
   }
 
   return (
@@ -161,9 +155,7 @@ export default function MagicLinkForm({ alias }: { alias?: string }) {
             <Select
               id="patient"
               value={selectedPatientId}
-              onChange={(e) =>
-                setSelectedPatientId(e.target.value)
-              }
+              onChange={(e) => setSelectedPatientId(e.target.value)}
               required
             >
               <option value="">Select a patient</option>
@@ -175,10 +167,9 @@ export default function MagicLinkForm({ alias }: { alias?: string }) {
             </Select>
 
             <p className="mt-1 text-sm leading-tight text-muted-foreground">
-              When the patient opens the magic link, they'll be
-              automatically signed in as this person, no login
-              needed. Don't see the patient you want to create a
-              link for?{' '}
+              When the patient opens the magic link, they'll be automatically
+              signed in as this person, no login needed. Don't see the patient
+              you want to create a link for?{' '}
               {dashboardUrl && (
                 <a
                   href={dashboardUrl}
@@ -208,9 +199,9 @@ export default function MagicLinkForm({ alias }: { alias?: string }) {
               ))}
             </Select>
             <p className="mt-1 text-sm leading-tight text-muted-foreground">
-              After signing in, the patient will be redirected to
-              this scan page where they can complete their health
-              check. Don't have a link set up yet?{' '}
+              After signing in, the patient will be redirected to this scan page
+              where they can complete their health check. Don't have a link set
+              up yet?{' '}
               {alias && (
                 <a
                   href={vitalsUrl(`${alias}/links`)}
@@ -243,15 +234,11 @@ export default function MagicLinkForm({ alias }: { alias?: string }) {
           )}
         </div>
 
-        {error && (
-          <p className="text-sm text-destructive">{error}</p>
-        )}
+        {error && <p className="text-sm text-destructive">{error}</p>}
 
         <Button
           type="submit"
-          disabled={
-            submitting || !selectedPatientId || !selectedLinkId
-          }
+          disabled={submitting || !selectedPatientId || !selectedLinkId}
           fullWidth
         >
           {submitting ? 'Generating...' : 'Generate Magic Link'}

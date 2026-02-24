@@ -2,12 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 
-import {
-  listScans,
-  retrieveScan,
-  type ScanDetail,
-  type ScanSummary,
-} from '@/app/actions'
+import { listScans, retrieveScan, type VitalsScan } from '@/app/actions'
 import { BackLink } from '@/components/ui/back-link'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -15,12 +10,10 @@ import { Label } from '@/components/ui/label'
 import { Select } from '@/components/ui/select'
 import { vitalsUrl } from '@/lib/urls'
 
-export default function ScanResultsForm({
-  alias,
-}: { alias?: string }) {
-  const [scans, setScans] = useState<ScanSummary[]>([])
+export default function ScanResultsForm({ alias }: { alias?: string }) {
+  const [scans, setScans] = useState<VitalsScan[]>([])
   const [selectedScanId, setSelectedScanId] = useState('')
-  const [scanDetail, setScanDetail] = useState<ScanDetail>()
+  const [scanDetail, setScanDetail] = useState<VitalsScan>()
   const [loading, setLoading] = useState(true)
   const [fetching, setFetching] = useState(false)
   const [error, setError] = useState<string>()
@@ -31,9 +24,9 @@ export default function ScanResultsForm({
 
     const result = await listScans()
     if (result.error) {
-      setError(result.error)
+      setError(result.error.title)
     } else {
-      setScans(result.scans ?? [])
+      setScans(result.data ?? [])
     }
 
     setLoading(false)
@@ -55,11 +48,11 @@ export default function ScanResultsForm({
     setFetching(false)
 
     if (result.error) {
-      setError(result.error)
+      setError(result.error.title)
       return
     }
 
-    setScanDetail(result.scan)
+    setScanDetail(result.data)
   }
 
   function formatDate(dateStr: string) {
@@ -67,18 +60,12 @@ export default function ScanResultsForm({
   }
 
   if (loading) {
-    return (
-      <p className="text-sm text-muted-foreground">Loading...</p>
-    )
+    return <p className="text-sm text-muted-foreground">Loading...</p>
   }
 
   return (
     <>
-      <Card
-        as="form"
-        onSubmit={handleSubmit}
-        className="space-y-8"
-      >
+      <Card as="form" onSubmit={handleSubmit} className="space-y-8">
         <div>
           <Label htmlFor="scan">Scan</Label>
           <Select
@@ -98,8 +85,8 @@ export default function ScanResultsForm({
             ))}
           </Select>
           <p className="mt-1 text-sm leading-tight text-muted-foreground">
-            Pick a scan to view its details, input data, and
-            results. Don't see any scans? Visit your{' '}
+            Pick a scan to view its details, input data, and results. Don't see
+            any scans? Visit your{' '}
             {alias && (
               <a
                 href={vitalsUrl(alias)}
@@ -114,15 +101,9 @@ export default function ScanResultsForm({
           </p>
         </div>
 
-        {error && (
-          <p className="text-sm text-destructive">{error}</p>
-        )}
+        {error && <p className="text-sm text-destructive">{error}</p>}
 
-        <Button
-          type="submit"
-          disabled={fetching || !selectedScanId}
-          fullWidth
-        >
+        <Button type="submit" disabled={fetching || !selectedScanId} fullWidth>
           {fetching ? 'Fetching...' : 'Fetch Scan'}
         </Button>
       </Card>
@@ -130,27 +111,19 @@ export default function ScanResultsForm({
       {scanDetail && (
         <Card className="mt-6 flex flex-col gap-4 text-sm">
           <div className="flex flex-col">
-            <span className="font-semibold text-foreground">
-              Status
-            </span>
-            <span className="text-foreground">
-              {scanDetail.status}
-            </span>
+            <span className="font-semibold text-foreground">Status</span>
+            <span className="text-foreground">{scanDetail.status}</span>
           </div>
 
           <div className="flex flex-col">
-            <span className="font-semibold text-foreground">
-              Created
-            </span>
+            <span className="font-semibold text-foreground">Created</span>
             <span className="text-muted-foreground">
               {formatDate(scanDetail.createdAt)}
             </span>
           </div>
 
           <div className="flex flex-col">
-            <span className="font-semibold text-foreground">
-              Updated
-            </span>
+            <span className="font-semibold text-foreground">Updated</span>
             <span className="text-muted-foreground">
               {formatDate(scanDetail.updatedAt)}
             </span>
@@ -158,9 +131,7 @@ export default function ScanResultsForm({
 
           {scanDetail.startedAt && (
             <div className="flex flex-col">
-              <span className="font-semibold text-foreground">
-                Started
-              </span>
+              <span className="font-semibold text-foreground">Started</span>
               <span className="text-muted-foreground">
                 {formatDate(scanDetail.startedAt)}
               </span>
@@ -169,9 +140,7 @@ export default function ScanResultsForm({
 
           {scanDetail.patientId && (
             <div className="flex flex-col">
-              <span className="font-semibold text-foreground">
-                Patient ID
-              </span>
+              <span className="font-semibold text-foreground">Patient ID</span>
               <span className="break-all font-mono text-xs text-muted-foreground">
                 {scanDetail.patientId}
               </span>
@@ -191,9 +160,7 @@ export default function ScanResultsForm({
 
           {scanDetail.includedMetrics.length > 0 && (
             <div className="flex flex-col">
-              <span className="font-semibold text-foreground">
-                Metrics
-              </span>
+              <span className="font-semibold text-foreground">Metrics</span>
               <span className="text-muted-foreground">
                 {scanDetail.includedMetrics.join(', ')}
               </span>
@@ -222,12 +189,11 @@ export default function ScanResultsForm({
             </div>
           ) : null}
 
-          {scanDetail.inputData == null &&
-            scanDetail.results == null && (
-              <p className="text-sm text-muted-foreground">
-                No input data or results available for this scan.
-              </p>
-            )}
+          {scanDetail.inputData == null && scanDetail.results == null && (
+            <p className="text-sm text-muted-foreground">
+              No input data or results available for this scan.
+            </p>
+          )}
         </Card>
       )}
 
