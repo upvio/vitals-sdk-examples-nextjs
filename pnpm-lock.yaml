@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@upvio/sdk-node':
-        specifier: link:../upvio-js/packages/upvio-sdk-node
-        version: link:../upvio-js/packages/upvio-sdk-node
+        specifier: 0.1.0
+        version: 0.1.0
       next:
         specifier: 16.1.6
         version: 16.1.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -410,6 +410,9 @@ packages:
 
   '@types/react@19.2.14':
     resolution: {integrity: sha512-ilcTH/UniCkMdtexkoCN0bI7pMcJDvmQFPvuPvmEaYA/NSfFTAgdUSLAoVjaRJm7+6PvcM+q1zYOwS4wTYMF9w==}
+
+  '@upvio/sdk-node@0.1.0':
+    resolution: {integrity: sha512-HZOBXK7IYf02YjNGyc3dQgqDk0RJnXQNlN9edQ3ugQDT7AhBeF2SciWGKEs8978wpW+xQvMRR1Tv3Q8/+ab0wg==}
 
   baseline-browser-mapping@2.10.0:
     resolution: {integrity: sha512-lIyg0szRfYbiy67j9KN8IyeD7q7hcmqnJ1ddWmNt19ItGpNN64mnllmxUNFIOdOm6by97jlL6wfpTTJrmnjWAA==}
@@ -876,6 +879,8 @@ snapshots:
   '@types/react@19.2.14':
     dependencies:
       csstype: 3.2.3
+
+  '@upvio/sdk-node@0.1.0': {}
 
   baseline-browser-mapping@2.10.0: {}
 
