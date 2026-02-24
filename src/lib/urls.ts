@@ -1,5 +1,4 @@
-const defaultDomain =
-  process.env.NODE_ENV === 'development' ? 'upvio.dev' : 'upvio.com'
+const defaultDomain = 'upvio.com'
 
 const domain = process.env.NEXT_PUBLIC_UPVIO_DOMAIN || defaultDomain
 
