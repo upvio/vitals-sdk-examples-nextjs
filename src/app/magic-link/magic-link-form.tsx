@@ -101,9 +101,7 @@ export default function MagicLinkForm({ alias }: { alias?: string }) {
 
   const selectedSlug = links.find((l) => l.id === selectedLinkId)?.slug
   const redirectUrl =
-    alias && selectedSlug
-      ? scanUrl(`${alias}/links/${selectedSlug}`)
-      : undefined
+    alias && selectedSlug ? scanUrl(alias, `links/${selectedSlug}`) : undefined
 
   if (view.kind === 'result') {
     return (

@@ -3,6 +3,14 @@
 import { upvio } from '@/lib/upvio'
 import { scanUrl } from '@/lib/urls'
 
+const businessAlias = (): string => {
+  const alias = process.env.UPVIO_BUSINESS_ALIAS
+  if (!alias) {
+    throw new Error('UPVIO_BUSINESS_ALIAS is not set; add it to .env.local')
+  }
+  return alias
+}
+
 export const listPatients = async () => {
   return upvio.v1.core.patients.list()
 }
@@ -14,9 +22,9 @@ export const generateMagicLink = async (
   patientId: string,
   linkSlug: string,
 ) => {
-  const alias = process.env.UPVIO_BUSINESS_ALIAS
+  const alias = businessAlias()
   return upvio.v1.core.patients.createMagicLink(patientId, {
-    redirectUrl: scanUrl(`${alias}/links/${linkSlug}`),
+    redirectUrl: scanUrl(alias, `links/${linkSlug}`),
   })
 }
 export type MagicLink = NonNullable<
@@ -47,7 +55,7 @@ export const createScanWithMagicLink = async (
   vitalsLinkId: string,
   inputData?: Record<string, unknown>,
 ) => {
-  const alias = process.env.UPVIO_BUSINESS_ALIAS
+  const alias = businessAlias()
   const { data: scan, error } = await upvio.v1.vitals.scans.create({
     vitalsLinkId,
     patientId,
@@ -62,6 +70,6 @@ export const createScanWithMagicLink = async (
     throw new Error('Scan creation did not return a scan or an error')
   }
 
-  const redirectUrl = scanUrl(`${alias}/scans/${scan.id}`)
+  const redirectUrl = scanUrl(alias, `scans/${scan.id}`)
   return upvio.v1.core.patients.createMagicLink(patientId, { redirectUrl })
 }
