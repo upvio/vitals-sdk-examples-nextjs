@@ -37,11 +37,11 @@ cp .env.local.sample .env.local
 
 Fill in `.env.local`:
 
-| Variable               | Description                                           |
-| ---------------------- | ----------------------------------------------------- |
-| `UPVIO_API_KEY`        | Your API key from the Upvio dashboard                 |
-| `UPVIO_BUSINESS_ID`    | Your business ID                                      |
-| `UPVIO_BUSINESS_ALIAS` | Your business alias (the subdomain in scan.upvio.com) |
+| Variable               | Description                                                        |
+| ---------------------- | ------------------------------------------------------------------ |
+| `UPVIO_API_KEY`        | Your API key from the Upvio dashboard                              |
+| `UPVIO_BUSINESS_ID`    | Your business ID                                                   |
+| `UPVIO_BUSINESS_ALIAS` | Your business alias (the subdomain in `<alias>.clients.upvio.com`) |
 
 ```bash
 pnpm install
